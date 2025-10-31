@@ -433,21 +433,21 @@ inline PyObject *read_class(ReaderT *reader, TypeTreeNodeObject *node, TypeTreeR
 }
 
 #if PY_VERSION_HEX >= 0x030e0000
-PyObject *get_annotations = nullptr;
+PyObject *get_annotations_func = nullptr;
 #endif
 
 inline PyObject *get_annotations(PyObject *clz)
 {
 #if PY_VERSION_HEX >= 0x030e0000
-    if (get_annotations == nullptr)
+    if (get_annotations_func == nullptr)
     {
         // from annotationlib import get_annotations
         PyObject *annotationlib = PyImport_ImportModule("annotationlib");
-        get_annotations = PyObject_GetAttrString(annotationlib, "get_annotations");
-        Py_INCREF(get_annotations);
+        get_annotations_func = PyObject_GetAttrString(annotationlib, "get_annotations");
+        Py_INCREF(get_annotations_func);
         Py_DECREF(annotationlib);
     }
-    return PyObject_CallFunctionObjArgs(get_annotations, clz, NULL);
+    return PyObject_CallFunctionObjArgs(get_annotations_func, clz, NULL);
 #else
     return PyObject_GetAttrString(clz, "__annotations__");
 #endif
